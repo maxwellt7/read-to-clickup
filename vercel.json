@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "src/app/api/webhook/read-ai/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}
