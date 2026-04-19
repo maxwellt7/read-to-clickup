@@ -13,6 +13,13 @@ const envSchema = z.object({
 export type Env = z.infer<typeof envSchema>;
 
 function validateEnv(): Env {
+  // During Next.js build phase, env vars are not available — skip validation.
+  // At runtime (serverless function invocation) NEXT_PHASE is not set and
+  // validation runs normally, failing fast if any var is missing or malformed.
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return {} as Env;
+  }
+
   const result = envSchema.safeParse(process.env);
   if (!result.success) {
     const messages = result.error.issues
