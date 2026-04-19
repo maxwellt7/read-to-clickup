@@ -30,10 +30,7 @@
     "eslint-config-next": "16.2.4",
     "tsx": "^4.21.0",
     "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.4"
-  },
-  "vitest": {
-    "environment": "node",
-    "include": ["tests/**/*.test.ts"]
   }
 }
