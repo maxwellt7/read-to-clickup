@@ -34,6 +34,7 @@ function parseDueDate(dueHint: string | null): number | undefined {
   if (lower.includes('next week')) {
     const nextWeek = new Date(now);
     nextWeek.setDate(now.getDate() + 7);
+    nextWeek.setHours(17, 0, 0, 0);
     return nextWeek.getTime();
   }
 
