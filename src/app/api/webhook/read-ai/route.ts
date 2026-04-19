@@ -32,7 +32,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const { meeting_id } = payload.payload;
+  const meeting_id = payload.payload?.meeting_id;
+  if (!meeting_id) {
+    return NextResponse.json({ error: 'Missing meeting_id in payload' }, { status: 400 });
+  }
   console.log(`Processing meeting: ${meeting_id}`);
 
   // 4. Run pipeline

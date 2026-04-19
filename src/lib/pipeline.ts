@@ -70,16 +70,22 @@ export async function processMeeting(meetingId: string): Promise<PipelineResult>
       await createMeetingDoc(meeting, call_type, extraction, fallbackListId, `[Needs Review] ${suggested_title}`);
     }
 
-    // 9. Create Tasks for action items
-    const tasks = await createActionItemTasks(
-      extraction.action_items,
-      listId,
-      call_type,
-      docUrl,
-    );
-
-    // 10. Mark as processed
+    // 9. Mark as processed now (doc written) — tasks are best-effort.
+    // Marking here prevents duplicate docs on retry if task creation fails.
     await markAsProcessed(meetingId);
+
+    // 10. Create Tasks for action items (best-effort, logged on failure)
+    let tasks: Awaited<ReturnType<typeof createActionItemTasks>> = [];
+    try {
+      tasks = await createActionItemTasks(
+        extraction.action_items,
+        listId,
+        call_type,
+        docUrl,
+      );
+    } catch (taskErr) {
+      console.error(`[pipeline] Task creation failed for meeting ${meetingId}:`, taskErr);
+    }
 
     return {
       success: true,

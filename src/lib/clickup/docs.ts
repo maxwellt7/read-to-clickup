@@ -42,7 +42,7 @@ function buildDocContent(
           '| Task | Owner | Due |',
           '|------|-------|-----|',
           ...extraction.action_items.map(
-            (a) => `| ${a.task} | ${a.assignee ?? 'Unassigned'} | ${a.due_hint ?? '—'} |`,
+            (a) => `| ${a.task.replace(/\|/g, '\\|')} | ${(a.assignee ?? 'Unassigned').replace(/\|/g, '\\|')} | ${(a.due_hint ?? '—').replace(/\|/g, '\\|')} |`,
           ),
         ].join('\n')
       : 'No action items recorded.';
