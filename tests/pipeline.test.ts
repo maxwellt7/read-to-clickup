@@ -112,4 +112,17 @@ describe('processMeeting', () => {
     await processMeeting('meet-leadership-001');
     expect(mockMarkAsProcessed).toHaveBeenCalledWith('meet-leadership-001');
   });
+
+  it('also creates doc in Needs Review list when confidence is low', async () => {
+    mockClassifyCall.mockResolvedValueOnce({
+      call_type: 'leadership',
+      confidence: 0.5, // below LOW_CONFIDENCE_THRESHOLD of 0.7
+      suggested_title: 'Q2 Strategy Review',
+    });
+    await processMeeting('meet-leadership-001');
+    // findOrCreateFolder called twice: once for primary (leadership), once for fallback (GROWTHGOD)
+    expect(mockFindOrCreateFolder).toHaveBeenCalledTimes(2);
+    // createMeetingDoc called twice: primary list + Needs Review list
+    expect(mockCreateMeetingDoc).toHaveBeenCalledTimes(2);
+  });
 });
