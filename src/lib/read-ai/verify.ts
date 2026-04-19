@@ -3,10 +3,11 @@ import { createHmac, timingSafeEqual } from 'crypto';
 /**
  * Verifies the Read.ai webhook HMAC-SHA256 signature.
  * Uses timing-safe comparison to prevent timing attacks.
+ * Accepts string | null to match Next.js req.headers.get() return type.
  */
 export function verifyReadAiSignature(
   body: string,
-  signature: string,
+  signature: string | null,
   secret: string,
 ): boolean {
   if (!signature) return false;

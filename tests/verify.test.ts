@@ -29,4 +29,8 @@ describe('verifyReadAiSignature', () => {
   it('returns false for an empty signature', () => {
     expect(verifyReadAiSignature(BODY, '', SECRET)).toBe(false);
   });
+
+  it('returns false for a null signature', () => {
+    expect(verifyReadAiSignature(BODY, null, SECRET)).toBe(false);
+  });
 });
