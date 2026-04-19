@@ -14,14 +14,14 @@ const VALID_CALL_TYPES: CallType[] = [
   'admin', 'hr', 'client', 'general',
 ];
 
+const anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+
 export async function classifyCall(
   meeting: ReadAiMeeting,
 ): Promise<ClassificationResult> {
-  const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-
   const prompt = buildClassificationPrompt(meeting);
 
-  const message = await client.messages.create({
+  const message = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 256,
     messages: [{ role: 'user', content: prompt }],

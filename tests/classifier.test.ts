@@ -1,5 +1,20 @@
 import { describe, it, expect, vi } from 'vitest';
 
+const mockCreate = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify({
+          call_type: 'leadership',
+          confidence: 0.92,
+          suggested_title: 'Q2 Strategy Review',
+        }),
+      },
+    ],
+  }),
+);
+
 vi.mock('@/lib/env', () => ({
   env: {
     ANTHROPIC_API_KEY: 'test-key',
@@ -11,19 +26,6 @@ vi.mock('@/lib/env', () => ({
     KV_REST_API_TOKEN: 'test-token',
   },
 }));
-
-const mockCreate = vi.fn().mockResolvedValue({
-  content: [
-    {
-      type: 'text',
-      text: JSON.stringify({
-        call_type: 'leadership',
-        confidence: 0.92,
-        suggested_title: 'Q2 Strategy Review',
-      }),
-    },
-  ],
-});
 
 vi.mock('@anthropic-ai/sdk', () => {
   return {

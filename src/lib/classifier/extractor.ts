@@ -24,16 +24,16 @@ export interface ExtractionResult {
   topics: string[];
 }
 
+const anthropic = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+
 export async function extractMeetingIntelligence(
   meeting: ReadAiMeeting,
   callType: string,
 ): Promise<ExtractionResult> {
-  const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-
   const fullTranscript = transcriptToText(meeting);
   const prompt = buildExtractionPrompt(meeting, callType, fullTranscript);
 
-  const message = await client.messages.create({
+  const message = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 2048,
     messages: [{ role: 'user', content: prompt }],
@@ -53,10 +53,15 @@ export async function extractMeetingIntelligence(
 
   const result = parsed as ExtractionResult;
 
+  const rawItems = Array.isArray(result.action_items) ? result.action_items : [];
+  const action_items: ActionItem[] = rawItems.filter(
+    (i): i is ActionItem => typeof i?.task === 'string' && i.task.length > 0,
+  );
+
   return {
     summary: result.summary ?? [],
     key_decisions: result.key_decisions ?? [],
-    action_items: result.action_items ?? [],
+    action_items,
     participants: result.participants ?? meeting.participants.map((p) => ({
       name: p.name,
       role: 'Participant',

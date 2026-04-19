@@ -7,7 +7,6 @@ async function readAiFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     headers: {
       Authorization: `Bearer ${env.READ_AI_API_KEY}`,
-      'Content-Type': 'application/json',
     },
   });
 
